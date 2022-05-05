@@ -1,0 +1,18 @@
+{
+  "name": "smart-vend",
+  "version": "1.0.0",
+  "description": "UPi based vending machine",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "smart-vend"
+  },
+  "author": "shafi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
