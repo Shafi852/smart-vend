@@ -13,6 +13,10 @@
   "author": "shafi",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.3"
+    "ejs": "^3.1.7",
+    "express": "^4.17.3",
+    "jquery": "^3.6.0",
+    "nodemon": "^2.0.16",
+    "razorpay": "^2.8.1"
   }
 }
