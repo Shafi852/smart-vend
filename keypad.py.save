@@ -45,10 +45,12 @@ lcd.text("smart-vend",1)
 time.sleep(1)
 lcd.clear()
 def post(data):
-  conn = connec.HTTPSConnection('smart-vend.herokuapp.com')
-  conn.request("POST", "/", data , {'Content-Type': 'application/json'})
+  conn = connec.HTTPSConnection('eoev19ctpl8p7i5.m.pipedream.net')
+  conn.request(POST", "/", data , {'Content-Type': 'application/json'})
   resp= conn.getresponse().status
-  return resp
+  if (resp==200):
+          return 'Success'
+
 
 charac=[]
 data2=[]
@@ -101,29 +103,13 @@ try:
        if(len(data2)==2):
            if not int(data2[1]):
                            lcd.text('Enter a valid quantity',1)
-                           data2.clear()
            else:  
                            sum = int(data2[0])* int(data2[1])
                            data2.append(sum)
-                           jsonfile={'item':data2[0],'quantity':data2[1],'amount':sum*100}
+                           jsonfile={'item':data2[0],'quantity':data2[1],'amount':sum}
                            print(jsonfile)
-                           flag=True
-                           count=0
-                           starttime = time.time()
-                           while (flag and count<2):
-                                      disp= "Pay"+str(sum)
-                                      lcd.text(disp,1)
-                                      time.sleep(15.0 - ((time.time() - starttime) % 15))
-                                      lcd.text('Waiting payment',1)
-                                      response=post(json.dumps(jsonfile))
-                                      if(response==200):
-                                                        flag=False
-                                                        lcd.text('Payment Successful',1)
-                                                        time.sleep(3)
-                                      count=count+1
-                           if(response==503): 
-                                      lcd.text('payment failed',1)
-                           print(response)
+                           response=post(json.dumps(jsonfile))
+                           lcd.text(response,1)
                            time.sleep(1)
                            data2.clear() 
 except KeyboardInterrupt:
