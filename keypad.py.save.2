@@ -1,6 +1,4 @@
-#!/usr/bin/python
 # import required libraries
-
 import qrcode
 from PIL import ImageDraw
 from PIL import Image
@@ -13,11 +11,6 @@ import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.SPI as SPI
 import json
 import time
-
-state=0
-count=5
-#start PWM running, but with value of 0 (pulse off)
-
 
 # these GPIO pins are connected to the keypad
 # change these according to your connections!
@@ -60,93 +53,18 @@ disp = TFT.ST7735(
 # Initialize the GPIO pins
 GPIO2.setwarnings(False)
 GPIO2.setmode(GPIO2.BCM)
-GPIO2.setup(4,GPIO2.OUT)
+
+
 GPIO2.setup(L1, GPIO2.OUT)
 GPIO2.setup(L2, GPIO2.OUT)
 GPIO2.setup(L3, GPIO2.OUT)
 GPIO2.setup(L4, GPIO2.OUT)
 
 # Make sure to configure the input pins to use the internal pull-down resistors
-servo1 = GPIO2.PWM(4,50)
-servo1.start(0)
+
 GPIO2.setup(C1, GPIO2.IN, pull_up_down=GPIO2.PUD_DOWN)
 GPIO2.setup(C2, GPIO2.IN, pull_up_down=GPIO2.PUD_DOWN)
 GPIO2.setup(C3, GPIO2.IN, pull_up_down=GPIO2.PUD_DOWN)
-def servorot():
-      #start PWM running, but with value of 0 (pulse off)
-    print ("Waiting for 2 seconds")
-    time.sleep(2)
-
-#Let's move the servo!
-    print ("Rotating 180 degrees in 10 steps")
-
-# Define variable duty
-    duty = 2
-
-# Loop for duty values from 2 to 12 (0 to 180 degrees)
-    while duty <= 12:
-        servo1.ChangeDutyCycle(duty)
-        time.sleep(0.01)
-        duty = duty + 1
-
-# Wait a couple of seconds
-    time.sleep(2)
-
-# Turn back to 90 degrees
-    print ("Turning back to 90 degrees for 2 seconds")
-    servo1.ChangeDutyCycle(7)
-    time.sleep(0.1)
-
-#turn back to 0 degrees
-    print ("Turning back to 0 degrees")
-    servo1.ChangeDutyCycle(2)
-    time.sleep(2)
-    servo1.ChangeDutyCycle(0)
-def turnup():
-#Let's move the servo!
-    print ("Rotating 180 degrees in 10 steps")
-
-# Define variable duty
-    duty = 2
-
-# Loop for duty values from 2 to 12 (0 to 180 degrees)
-    while duty <= 12.5:
-        servo1.ChangeDutyCycle(duty)
-        time.sleep(0.05)
-        duty = duty + 1
-
-# Wait a couple of seconds
-    time.sleep(2)
-    servo1.ChangeDutyCycle(0)
-def turndown():
-# Turn back to 90 degrees
-    print ("Turning back to 90 degrees for 2 seconds")
-    servo1.ChangeDutyCycle(7)
-    time.sleep(0.1)
-
-#turn back to 0 degrees
-    print ("Turning back to 0 degrees")
-    servo1.ChangeDutyCycle(2)
-    time.sleep(2)
-    servo1.ChangeDutyCycle(0)
-    
-def dispenser(c):
-    
-    global state
-    for counter in range(c):
-        if(c==120):
-            turndown()
-            time.sleep(1)
-            break
-        if( state==1):
-            turndown()
-            state=0
-        else:
-            turnup()
-            state=1
-    
-
-#Clean things up at the end
 
 # The readLine function implements the procedure discussed in the article
 # It sends out a single pulse to one of the rows of the keypad
@@ -155,7 +73,6 @@ def dispenser(c):
 # to the detected column
 #initiate lcd
 lcd=LCD()
-servorot()
 lcd.text("smart-vend",1)
 time.sleep(1)
 lcd.clear()
@@ -186,15 +103,14 @@ def readLine(line, characters):
         if(line!=L4):
                 charac.append(characters[2])
                 lcd.text("".join(charac),2)
-        elif(len(charac)==0 ):
-                lcd.text('Enter a valid value ',2)
+        elif(len(charac)==0):
+                lcd.text('Enter a valid value',2)
         else:
                 data="".join(charac)
                 print(data)
                 lcd.clear()
                 charac.clear()
                 data2.append(data)
-                print(data2)
     GPIO2.output(line, GPIO2.LOW)
 
 try:
@@ -211,16 +127,10 @@ try:
            readLine(L3, ["7","8","9"])
            readLine(L4, ["*","0","#"])
            time.sleep(0.2)
-       if (data2[0]!='1'):
-           data2.clear()
-           print(data2)
-           lcd.text("No product",1)
-           time.sleep(2)
-       else:
-           print("Enter the quantity")
-           lcd.text('Enter the quantity',1)
+       print("Enter the quantity")
+       lcd.text('Enter the quantity',1)
        while (len(data2)==1):
-           if not int(data2[0]) :
+           if not int(data2[0]):
                            lcd.text('Enter a valid product',1)
                            data2.clear()
            else:
@@ -246,7 +156,7 @@ try:
                                       lcd.text(displ,1)
                                       time.sleep(2)
                                       lcd.text('Waiting payment',2)
-                                      image = qrcode.make('upi://pay?ver=01&mode=01&pa=rpy.qrsmarted07480129793@icici&pn=smarted&tr=RZPJgv9V3PgSn6e1sqrv2&tn=Paymenttosmarted&am='+str(sum)+'&cu=INR&mc=5045&qrMedium=04')
+                                      i
                                       image = image.rotate(90).resize((WIDTH, HEIGHT))
                                       print('Drawing image')
                                       disp.display(image)
@@ -259,9 +169,6 @@ try:
                                                         time.sleep(5)
                                                         disp.clear()
                                                         lcd.clear()
-                                                        lcd.text('Vending...',1)
-                                                        dispenser(int(data2[1]))
-                                                        time.sleep(2)
                                                         lcd.text('Thank You',1)
                                                         time.sleep(2)
                                                         lcd.clear()
@@ -281,6 +188,3 @@ except KeyboardInterrupt:
     lcd.clear()
     img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
     disp.display(img)
-    servo1.stop()
-    GPIO2.cleanup()
-    print("Servo Stop")

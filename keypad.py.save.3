@@ -1,6 +1,4 @@
-#!/usr/bin/python
 # import required libraries
-
 import qrcode
 from PIL import ImageDraw
 from PIL import Image
@@ -86,7 +84,7 @@ def servorot():
 # Loop for duty values from 2 to 12 (0 to 180 degrees)
     while duty <= 12:
         servo1.ChangeDutyCycle(duty)
-        time.sleep(0.01)
+        time.sleep(0.03)
         duty = duty + 1
 
 # Wait a couple of seconds
@@ -95,12 +93,12 @@ def servorot():
 # Turn back to 90 degrees
     print ("Turning back to 90 degrees for 2 seconds")
     servo1.ChangeDutyCycle(7)
-    time.sleep(0.1)
+    time.sleep(0.3)
 
 #turn back to 0 degrees
     print ("Turning back to 0 degrees")
     servo1.ChangeDutyCycle(2)
-    time.sleep(2)
+    time.sle	ep(0.5)
     servo1.ChangeDutyCycle(0)
 def turnup():
 #Let's move the servo!
@@ -122,13 +120,14 @@ def turndown():
 # Turn back to 90 degrees
     print ("Turning back to 90 degrees for 2 seconds")
     servo1.ChangeDutyCycle(7)
-    time.sleep(0.1)
+    time.sleep(0.3)
 
 #turn back to 0 degrees
     print ("Turning back to 0 degrees")
     servo1.ChangeDutyCycle(2)
-    time.sleep(2)
+    time.sleep(0.5)
     servo1.ChangeDutyCycle(0)
+    time.sleep(2)
     
 def dispenser(c):
     
@@ -136,7 +135,6 @@ def dispenser(c):
     for counter in range(c):
         if(c==120):
             turndown()
-            time.sleep(1)
             break
         if( state==1):
             turndown()
@@ -186,15 +184,14 @@ def readLine(line, characters):
         if(line!=L4):
                 charac.append(characters[2])
                 lcd.text("".join(charac),2)
-        elif(len(charac)==0 ):
-                lcd.text('Enter a valid value ',2)
+        elif(len(charac)==0):
+                lcd.text('Enter a valid value',2)
         else:
                 data="".join(charac)
                 print(data)
                 lcd.clear()
                 charac.clear()
                 data2.append(data)
-                print(data2)
     GPIO2.output(line, GPIO2.LOW)
 
 try:
@@ -211,16 +208,10 @@ try:
            readLine(L3, ["7","8","9"])
            readLine(L4, ["*","0","#"])
            time.sleep(0.2)
-       if (data2[0]!='1'):
-           data2.clear()
-           print(data2)
-           lcd.text("No product",1)
-           time.sleep(2)
-       else:
-           print("Enter the quantity")
-           lcd.text('Enter the quantity',1)
+       print("Enter the quantity")
+       lcd.text('Enter the quantity',1)
        while (len(data2)==1):
-           if not int(data2[0]) :
+           if not int(data2[0]):
                            lcd.text('Enter a valid product',1)
                            data2.clear()
            else:
